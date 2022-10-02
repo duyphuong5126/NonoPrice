@@ -39,7 +39,7 @@ class HomeCategoryListCubit extends Cubit<HomeCategoryListState> {
           })));
     }).doOnFailure((error) {
       emit(const HomeLoadingCategoriesFailure(
-          message: 'Failed to load category list'));
+          message: 'Could not load category list'));
     });
   }
 }

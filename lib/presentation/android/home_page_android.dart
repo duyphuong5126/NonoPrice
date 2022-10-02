@@ -78,7 +78,10 @@ class _HomePageBodyState extends State<_HomePageBody> with LogMixin {
                         style: context.titleLarge,
                       ),
                       IconButton(
-                          icon: const Icon(Icons.refresh),
+                          icon: const Icon(
+                            Icons.refresh,
+                            size: 32,
+                          ),
                           onPressed: () {
                             context
                                 .read<HomeCategoryListCubit>()
