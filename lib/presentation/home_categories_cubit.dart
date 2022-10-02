@@ -22,7 +22,8 @@ class HomeCategoryListCubit extends Cubit<HomeCategoryListState> {
         _defaultNumberFormat = NumberFormat('###,###', locale?.languageCode),
         super(const HomeLoadingCategories());
 
-  void init() async {
+  void getCategoryList() async {
+    emit(const HomeLoadingCategories());
     (await _getCategoriesUseCase.execute()).doOnSuccess((categories) {
       emit(HomeProductCategories(
           header: 'Choose a product type',

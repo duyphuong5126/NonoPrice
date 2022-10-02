@@ -24,8 +24,8 @@ class _HomePageIOSState extends State<HomePageIOS> {
     return MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) =>
-                DependencyManager.get<HomeCategoryListCubit>()..init(),
+            create: (context) => DependencyManager.get<HomeCategoryListCubit>()
+              ..getCategoryList(),
           ),
           BlocProvider(
             create: (context) => HomeTitleCubit(),
@@ -78,9 +78,25 @@ class _HomePageBodyState extends State<_HomePageBody> {
           ? _CategoryList(state: state, itemHeight: categoryItemHeight)
           : state is HomeLoadingCategoriesFailure
               ? Center(
-                  child: Text(
-                    state.message,
-                    style: context.titleLarge,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        state.message,
+                        style: context.titleLarge,
+                      ),
+                      CupertinoButton(
+                          child: const Icon(
+                            CupertinoIcons.refresh_thick,
+                            size: 32,
+                          ),
+                          onPressed: () {
+                            context
+                                .read<HomeCategoryListCubit>()
+                                .getCategoryList();
+                          })
+                    ],
                   ),
                 )
               : const Center(

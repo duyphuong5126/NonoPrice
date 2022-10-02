@@ -23,7 +23,7 @@ class _HomePageAndroidState extends State<HomePageAndroid> {
       providers: [
         BlocProvider(
           create: (context) =>
-              DependencyManager.get<HomeCategoryListCubit>()..init(),
+              DependencyManager.get<HomeCategoryListCubit>()..getCategoryList(),
         ),
         BlocProvider(
           create: (context) => HomeTitleCubit(),
@@ -69,9 +69,22 @@ class _HomePageBodyState extends State<_HomePageBody> with LogMixin {
             )
           : state is HomeLoadingCategoriesFailure
               ? Center(
-                  child: Text(
-                    state.message,
-                    style: context.titleLarge,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        state.message,
+                        style: context.titleLarge,
+                      ),
+                      IconButton(
+                          icon: const Icon(Icons.refresh),
+                          onPressed: () {
+                            context
+                                .read<HomeCategoryListCubit>()
+                                .getCategoryList();
+                          })
+                    ],
                   ),
                 )
               : const Center(
