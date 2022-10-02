@@ -1,11 +1,8 @@
-enum ProductCategory {
-  smartPhone(id: 1),
-  tablet(id: 2),
-  laptop(id: 3),
-  mobileAccessory(id: 4),
-  smartTv(id: 5);
+class ProductCategory {
+  final String id;
+  final String name;
+  final int productCount;
 
-  final int id;
-
-  const ProductCategory({required this.id});
+  const ProductCategory(
+      {required this.id, required this.name, required this.productCount});
 }

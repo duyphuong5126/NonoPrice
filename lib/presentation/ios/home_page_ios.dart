@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nonoprice/domain/entity/product_category.dart';
 import 'package:nonoprice/presentation/home_categories_cubit.dart';
 import 'package:nonoprice/presentation/model/product_category_uimodel.dart';
 import 'package:nonoprice/utility/cupertino_context_extension.dart';
 import 'package:nonoprice/utility/text_extension.dart';
 
+import '../../di/dependency_manager.dart';
 import '../home_title_cubit.dart';
 import '../model/home_state.dart';
 
@@ -24,7 +24,8 @@ class _HomePageIOSState extends State<HomePageIOS> {
     return MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => HomeCategoryListCubit()..init(),
+            create: (context) =>
+                DependencyManager.get<HomeCategoryListCubit>()..init(),
           ),
           BlocProvider(
             create: (context) => HomeTitleCubit(),
@@ -72,56 +73,71 @@ class _HomePageBodyState extends State<_HomePageBody> {
   Widget build(BuildContext context) {
     double categoryItemHeight = widget.safeAreaHeight / 2;
     return BlocBuilder<HomeCategoryListCubit, HomeCategoryListState>(
-        buildWhen: (prevState, currentState) {
-      return currentState is HomeProductCategories;
-    }, builder: (context, state) {
+        builder: (context, state) {
       return state is HomeProductCategories
-          ? Container(
-              alignment: Alignment.topCenter,
-              margin: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
-              child: CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Container(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
-                      child: Text(
-                        state.header,
-                        style: context.titleLarge
-                            .copyWith(color: context.primaryColor),
-                      ),
-                    ),
+          ? _CategoryList(state: state, itemHeight: categoryItemHeight)
+          : state is HomeLoadingCategoriesFailure
+              ? Center(
+                  child: Text(
+                    state.message,
+                    style: context.titleLarge,
                   ),
-                  SliverGrid(
-                      delegate: SliverChildBuilderDelegate(
-                          childCount: state.categories.length,
-                          (context, index) {
-                        return _ProductCategory(
-                            model: state.categories.elementAt(index),
-                            height: categoryItemHeight,
-                            onCategorySelected: (category) {});
-                      }),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 8.0,
-                              crossAxisSpacing: 8.0))
-                ],
-              ),
-            )
-          : const Center(
-              child: CupertinoActivityIndicator(
-                radius: 16,
-              ),
-            );
+                )
+              : const Center(
+                  child: CupertinoActivityIndicator(
+                    radius: 16,
+                  ),
+                );
     });
+  }
+}
+
+class _CategoryList extends StatelessWidget {
+  final HomeProductCategories state;
+  final double itemHeight;
+
+  const _CategoryList({Key? key, required this.state, required this.itemHeight})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.topCenter,
+      margin: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(
+            child: Container(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
+              child: Text(
+                state.header,
+                style: context.titleLarge.copyWith(color: context.primaryColor),
+              ),
+            ),
+          ),
+          SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                  childCount: state.categories.length, (context, index) {
+                return _ProductCategory(
+                    model: state.categories.elementAt(index),
+                    height: itemHeight,
+                    onCategorySelected: (category) {});
+              }),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 8.0,
+                  crossAxisSpacing: 8.0))
+        ],
+      ),
+    );
   }
 }
 
 class _ProductCategory extends StatelessWidget {
   final double height;
   final ProductCategoryUiModel model;
-  final Function(ProductCategory) onCategorySelected;
+  final Function(String) onCategorySelected;
 
   const _ProductCategory(
       {Key? key,
@@ -133,7 +149,7 @@ class _ProductCategory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () => onCategorySelected(model.category),
+        onTap: () => onCategorySelected(model.categoryId),
         child: Container(
           padding: const EdgeInsets.all(4.0),
           height: height,
@@ -160,17 +176,5 @@ class _ProductCategory extends StatelessWidget {
         ));
   }
 }
-
-/*Container(
-          height: height,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-              border: Border.all(color: context.primaryColor),
-              borderRadius: const BorderRadius.all(Radius.circular(16.0))),
-          child: Text(
-            model.name,
-            style: context.bodyLarge.copyWith(color: context.primaryColor),
-          ),
-        )*/
 
 /// End region of Home page's Body

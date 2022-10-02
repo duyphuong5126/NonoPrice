@@ -21,3 +21,12 @@ class HomeProductCategories extends HomeCategoryListState {
   @override
   List<Object?> get props => [header, ...categories];
 }
+
+class HomeLoadingCategoriesFailure extends HomeCategoryListState {
+  final String message;
+
+  const HomeLoadingCategoriesFailure({required this.message}) : super();
+
+  @override
+  List<Object?> get props => [message];
+}

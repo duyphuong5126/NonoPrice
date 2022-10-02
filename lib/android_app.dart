@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nonoprice/presentation/android/home_page_android.dart';
 
+import 'di/dependency_manager.dart';
+
 class NonoPriceAndroid extends StatefulWidget {
   const NonoPriceAndroid({Key? key}) : super(key: key);
 
@@ -10,6 +12,12 @@ class NonoPriceAndroid extends StatefulWidget {
 }
 
 class _NonoPriceAndroidState extends State<NonoPriceAndroid> {
+  @override
+  void initState() {
+    super.initState();
+    DependencyManager.init();
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;

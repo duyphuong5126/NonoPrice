@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nonoprice/utility/material_context_extension.dart';
 
-import '../../domain/entity/product_category.dart';
+import '../../di/dependency_manager.dart';
+import '../../utility/log.dart';
 import '../home_categories_cubit.dart';
 import '../home_title_cubit.dart';
 import '../model/home_state.dart';
@@ -21,7 +22,8 @@ class _HomePageAndroidState extends State<HomePageAndroid> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => HomeCategoryListCubit()..init(),
+          create: (context) =>
+              DependencyManager.get<HomeCategoryListCubit>()..init(),
         ),
         BlocProvider(
           create: (context) => HomeTitleCubit(),
@@ -53,63 +55,83 @@ class _HomePageBody extends StatefulWidget {
   State<_HomePageBody> createState() => _HomePageBodyState();
 }
 
-class _HomePageBodyState extends State<_HomePageBody> {
+class _HomePageBodyState extends State<_HomePageBody> with LogMixin {
   @override
   Widget build(BuildContext context) {
     double categoryItemHeight = widget.safeAreaHeight / 2;
     return BlocBuilder<HomeCategoryListCubit, HomeCategoryListState>(
-        buildWhen: (prevState, currentState) {
-      return currentState is HomeProductCategories;
-    }, builder: (context, state) {
+        builder: (context, state) {
+      logDebug('state $state');
       return state is HomeProductCategories
-          ? Container(
-              alignment: Alignment.topCenter,
-              margin: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
-              child: CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Container(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
-                      child: Text(
-                        state.header,
-                        style: context.titleLarge
-                            ?.copyWith(color: context.primaryColor),
-                      ),
-                    ),
-                  ),
-                  SliverGrid(
-                      delegate: SliverChildBuilderDelegate(
-                          childCount: state.categories.length,
-                          (context, index) {
-                        return _ProductCategory(
-                            model: state.categories.elementAt(index),
-                            height: categoryItemHeight,
-                            onCategorySelected: (category) {});
-                      }),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 8.0,
-                              crossAxisSpacing: 8.0))
-                ],
-              ),
+          ? _CategoryList(
+              state: state,
+              itemHeight: categoryItemHeight,
             )
-          : const Center(
-              child: SizedBox(
-                width: 16,
-                height: 16,
-                child: CircularProgressIndicator(),
-              ),
-            );
+          : state is HomeLoadingCategoriesFailure
+              ? Center(
+                  child: Text(
+                    state.message,
+                    style: context.titleLarge,
+                  ),
+                )
+              : const Center(
+                  child: SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: CircularProgressIndicator(),
+                  ),
+                );
     });
+  }
+}
+
+class _CategoryList extends StatelessWidget {
+  final HomeProductCategories state;
+  final double itemHeight;
+
+  const _CategoryList({Key? key, required this.state, required this.itemHeight})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.topCenter,
+      margin: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(
+            child: Container(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
+              child: Text(
+                state.header,
+                style:
+                    context.titleLarge?.copyWith(color: context.primaryColor),
+              ),
+            ),
+          ),
+          SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                  childCount: state.categories.length, (context, index) {
+                return _ProductCategory(
+                    model: state.categories.elementAt(index),
+                    height: itemHeight,
+                    onCategorySelected: (category) {});
+              }),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 8.0,
+                  crossAxisSpacing: 8.0))
+        ],
+      ),
+    );
   }
 }
 
 class _ProductCategory extends StatelessWidget {
   final double height;
   final ProductCategoryUiModel model;
-  final Function(ProductCategory) onCategorySelected;
+  final Function(String) onCategorySelected;
 
   const _ProductCategory(
       {Key? key,
@@ -127,7 +149,7 @@ class _ProductCategory extends StatelessWidget {
 
     return InkWell(
         borderRadius: const BorderRadius.all(Radius.circular(16.0)),
-        onTap: () => onCategorySelected(model.category),
+        onTap: () => onCategorySelected(model.categoryId),
         child: Ink(
           padding: const EdgeInsets.all(4.0),
           height: height,

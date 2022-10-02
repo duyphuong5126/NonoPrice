@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nonoprice/presentation/ios/home_page_ios.dart';
 
+import 'di/dependency_manager.dart';
+
 class NonoPriceIOS extends StatefulWidget {
   const NonoPriceIOS({Key? key}) : super(key: key);
 
@@ -10,6 +12,12 @@ class NonoPriceIOS extends StatefulWidget {
 }
 
 class _NonoPriceIOSState extends State<NonoPriceIOS> {
+  @override
+  void initState() {
+    super.initState();
+    DependencyManager.init();
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
