@@ -20,7 +20,7 @@ class HomeCategoryListCubit extends Cubit<HomeCategoryListState> {
         _compactNumberFormat =
             NumberFormat.compact(locale: locale?.languageCode),
         _defaultNumberFormat = NumberFormat('###,###', locale?.languageCode),
-        super(const HomeLoadingCategories());
+        super(const HomeTitle(title: 'Welcome'));
 
   void getCategoryList() async {
     emit(const HomeLoadingCategories());

@@ -8,7 +8,6 @@ import 'package:nonoprice/utility/cupertino_context_extension.dart';
 import 'package:nonoprice/utility/text_extension.dart';
 
 import '../../di/dependency_manager.dart';
-import '../home_title_cubit.dart';
 import '../model/home_state.dart';
 
 class HomePageIOS extends StatefulWidget {
@@ -26,17 +25,18 @@ class _HomePageIOSState extends State<HomePageIOS> {
           BlocProvider(
             create: (context) => DependencyManager.get<HomeCategoryListCubit>()
               ..getCategoryList(),
-          ),
-          BlocProvider(
-            create: (context) => HomeTitleCubit(),
           )
         ],
         child: CupertinoPageScaffold(
             child: CustomScrollView(
           slivers: [
             CupertinoSliverNavigationBar(
-              largeTitle: BlocBuilder<HomeTitleCubit, String>(
-                  builder: (context, title) {
+              largeTitle:
+                  BlocBuilder<HomeCategoryListCubit, HomeCategoryListState>(
+                      buildWhen: (prev, current) {
+                return current is HomeTitle;
+              }, builder: (context, state) {
+                String title = state is HomeTitle ? state.title : 'Welcome';
                 return Text(
                   title,
                   style: GoogleFonts.nunito()

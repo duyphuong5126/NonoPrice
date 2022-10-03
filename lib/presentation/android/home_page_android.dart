@@ -5,7 +5,6 @@ import 'package:nonoprice/utility/material_context_extension.dart';
 import '../../di/dependency_manager.dart';
 import '../../utility/log.dart';
 import '../home_categories_cubit.dart';
-import '../home_title_cubit.dart';
 import '../model/home_state.dart';
 import '../model/product_category_uimodel.dart';
 
@@ -25,13 +24,14 @@ class _HomePageAndroidState extends State<HomePageAndroid> {
           create: (context) =>
               DependencyManager.get<HomeCategoryListCubit>()..getCategoryList(),
         ),
-        BlocProvider(
-          create: (context) => HomeTitleCubit(),
-        )
       ],
       child: Scaffold(
         appBar: AppBar(
-          title: BlocBuilder<HomeTitleCubit, String>(builder: (context, title) {
+          title: BlocBuilder<HomeCategoryListCubit, HomeCategoryListState>(
+              buildWhen: (prev, current) {
+            return current is HomeTitle;
+          }, builder: (context, state) {
+            String title = state is HomeTitle ? state.title : 'Welcome';
             return Text(
               title,
               style: TextStyle(inherit: true, color: context.mainColor),

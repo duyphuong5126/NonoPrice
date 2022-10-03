@@ -5,6 +5,15 @@ abstract class HomeCategoryListState extends Equatable {
   const HomeCategoryListState();
 }
 
+class HomeTitle extends HomeCategoryListState {
+  final String title;
+
+  const HomeTitle({required this.title}) : super();
+
+  @override
+  List<Object?> get props => [title];
+}
+
 class HomeLoadingCategories extends HomeCategoryListState {
   const HomeLoadingCategories() : super();
 
