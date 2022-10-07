@@ -4,7 +4,7 @@ import 'package:nonoprice/utility/material_context_extension.dart';
 
 import '../../di/dependency_manager.dart';
 import '../../utility/log.dart';
-import '../home_categories_cubit.dart';
+import '../home_cubit.dart';
 import '../model/home_state.dart';
 import '../model/product_category_uimodel.dart';
 
@@ -22,13 +22,12 @@ class _HomePageAndroidState extends State<HomePageAndroid> {
       providers: [
         BlocProvider(
           create: (context) =>
-              DependencyManager.get<HomeCategoryListCubit>()..getCategoryList(),
+              DependencyManager.get<HomeCubit>()..getCategoryList(),
         ),
       ],
       child: Scaffold(
         appBar: AppBar(
-          title: BlocBuilder<HomeCategoryListCubit, HomeCategoryListState>(
-              buildWhen: (prev, current) {
+          title: BlocBuilder<HomeCubit, HomeState>(buildWhen: (prev, current) {
             return current is HomeTitle;
           }, builder: (context, state) {
             String title = state is HomeTitle ? state.title : 'Welcome';
@@ -59,9 +58,7 @@ class _HomePageBodyState extends State<_HomePageBody> with LogMixin {
   @override
   Widget build(BuildContext context) {
     double categoryItemHeight = widget.safeAreaHeight / 2;
-    return BlocBuilder<HomeCategoryListCubit, HomeCategoryListState>(
-        builder: (context, state) {
-      logDebug('state $state');
+    return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
       return state is HomeProductCategories
           ? _CategoryList(
               state: state,
@@ -83,9 +80,7 @@ class _HomePageBodyState extends State<_HomePageBody> with LogMixin {
                             size: 32,
                           ),
                           onPressed: () {
-                            context
-                                .read<HomeCategoryListCubit>()
-                                .getCategoryList();
+                            context.read<HomeCubit>().getCategoryList();
                           })
                     ],
                   ),

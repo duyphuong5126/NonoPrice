@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'product_category_uimodel.dart';
 
-abstract class HomeCategoryListState extends Equatable {
-  const HomeCategoryListState();
+abstract class HomeState extends Equatable {
+  const HomeState();
 }
 
-class HomeTitle extends HomeCategoryListState {
+class HomeTitle extends HomeState {
   final String title;
 
   const HomeTitle({required this.title}) : super();
@@ -14,14 +14,14 @@ class HomeTitle extends HomeCategoryListState {
   List<Object?> get props => [title];
 }
 
-class HomeLoadingCategories extends HomeCategoryListState {
+class HomeLoadingCategories extends HomeState {
   const HomeLoadingCategories() : super();
 
   @override
   List<Object?> get props => [1];
 }
 
-class HomeProductCategories extends HomeCategoryListState {
+class HomeProductCategories extends HomeState {
   final String header;
   final Iterable<ProductCategoryUiModel> categories;
 
@@ -31,7 +31,7 @@ class HomeProductCategories extends HomeCategoryListState {
   List<Object?> get props => [header, ...categories];
 }
 
-class HomeLoadingCategoriesFailure extends HomeCategoryListState {
+class HomeLoadingCategoriesFailure extends HomeState {
   final String message;
 
   const HomeLoadingCategoriesFailure({required this.message}) : super();

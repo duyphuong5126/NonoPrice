@@ -5,17 +5,19 @@ import 'package:intl/intl.dart';
 import 'package:nonoprice/presentation/model/product_category_uimodel.dart';
 
 import '../domain/usecase/get_category_list_use_case.dart';
+import '../domain/usecase/get_product_list_use_case.dart';
 import 'model/home_state.dart';
 
-const int _compactFormatThreshold = 1000000;
+const int _compactFormatThreshold = 10000;
 
-class HomeCategoryListCubit extends Cubit<HomeCategoryListState> {
+class HomeCubit extends Cubit<HomeState> {
   final GetCategoryListUseCase _getCategoriesUseCase;
   final NumberFormat _compactNumberFormat;
   final NumberFormat _defaultNumberFormat;
 
-  HomeCategoryListCubit(
-      {required GetCategoryListUseCase getCategoriesUseCase, Locale? locale})
+  HomeCubit(
+      {required GetCategoryListUseCase getCategoriesUseCase,
+      Locale? locale})
       : _getCategoriesUseCase = getCategoriesUseCase,
         _compactNumberFormat =
             NumberFormat.compact(locale: locale?.languageCode),
@@ -28,10 +30,10 @@ class HomeCategoryListCubit extends Cubit<HomeCategoryListState> {
       emit(HomeProductCategories(
           header: 'Choose a product type',
           categories: categories.map((category) {
-            String formattedCount =
-                category.productCount >= _compactFormatThreshold
-                    ? '(${_compactNumberFormat.format(category.productCount)})'
-                    : '(${_defaultNumberFormat.format(category.productCount)})';
+            String formattedCount = category.productCount >=
+                    _compactFormatThreshold
+                ? '(${_compactNumberFormat.format(category.productCount)} products)'
+                : '(${_defaultNumberFormat.format(category.productCount)} products)';
             return ProductCategoryUiModel(
                 categoryId: category.id,
                 name: category.name,

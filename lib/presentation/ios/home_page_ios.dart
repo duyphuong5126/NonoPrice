@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nonoprice/presentation/home_categories_cubit.dart';
+import 'package:nonoprice/presentation/home_cubit.dart';
 import 'package:nonoprice/presentation/model/product_category_uimodel.dart';
 import 'package:nonoprice/utility/cupertino_context_extension.dart';
 import 'package:nonoprice/utility/text_extension.dart';
@@ -23,7 +23,7 @@ class _HomePageIOSState extends State<HomePageIOS> {
     return MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => DependencyManager.get<HomeCategoryListCubit>()
+            create: (context) => DependencyManager.get<HomeCubit>()
               ..getCategoryList(),
           )
         ],
@@ -32,7 +32,7 @@ class _HomePageIOSState extends State<HomePageIOS> {
           slivers: [
             CupertinoSliverNavigationBar(
               largeTitle:
-                  BlocBuilder<HomeCategoryListCubit, HomeCategoryListState>(
+                  BlocBuilder<HomeCubit, HomeState>(
                       buildWhen: (prev, current) {
                 return current is HomeTitle;
               }, builder: (context, state) {
@@ -72,7 +72,7 @@ class _HomePageBodyState extends State<_HomePageBody> {
   @override
   Widget build(BuildContext context) {
     double categoryItemHeight = widget.safeAreaHeight / 2;
-    return BlocBuilder<HomeCategoryListCubit, HomeCategoryListState>(
+    return BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
       return state is HomeProductCategories
           ? _CategoryList(state: state, itemHeight: categoryItemHeight)
@@ -93,7 +93,7 @@ class _HomePageBodyState extends State<_HomePageBody> {
                           ),
                           onPressed: () {
                             context
-                                .read<HomeCategoryListCubit>()
+                                .read<HomeCubit>()
                                 .getCategoryList();
                           })
                     ],
