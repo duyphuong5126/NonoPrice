@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nonoprice/utility/material_context_extension.dart';
 
-import '../../di/dependency_manager.dart';
+import '../../shared/constant.dart';
+import '../../shared/widget/loading_page_android.dart';
 import '../../utility/log.dart';
 import '../home_cubit.dart';
 import '../model/home_state.dart';
@@ -18,27 +19,20 @@ class HomePageAndroid extends StatefulWidget {
 class _HomePageAndroidState extends State<HomePageAndroid> {
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) =>
-              DependencyManager.get<HomeCubit>()..getCategoryList(),
-        ),
-      ],
-      child: Scaffold(
-        appBar: AppBar(
-          title: BlocBuilder<HomeCubit, HomeState>(buildWhen: (prev, current) {
-            return current is HomeTitle;
-          }, builder: (context, state) {
-            String title = state is HomeTitle ? state.title : 'Welcome';
-            return Text(
-              title,
-              style: TextStyle(inherit: true, color: context.mainColor),
-            );
-          }),
-        ),
-        body: _HomePageBody(safeAreaHeight: context.safeAreaHeight),
+    context.read<HomeCubit>().getCategoryList();
+    return Scaffold(
+      appBar: AppBar(
+        title: BlocBuilder<HomeCubit, HomeState>(buildWhen: (prev, current) {
+          return current is HomeTitle;
+        }, builder: (context, state) {
+          String title = state is HomeTitle ? state.title : 'Welcome';
+          return Text(
+            title,
+            style: TextStyle(inherit: true, color: context.mainColor),
+          );
+        }),
       ),
+      body: _HomePageBody(safeAreaHeight: context.safeAreaHeight),
     );
   }
 }
@@ -85,13 +79,7 @@ class _HomePageBodyState extends State<_HomePageBody> with LogMixin {
                     ],
                   ),
                 )
-              : const Center(
-                  child: SizedBox(
-                    width: 32,
-                    height: 32,
-                    child: CircularProgressIndicator(),
-                  ),
-                );
+              : const LoadingPageAndroid();
     });
   }
 }
@@ -127,7 +115,10 @@ class _CategoryList extends StatelessWidget {
                 return _ProductCategory(
                     model: state.categories.elementAt(index),
                     height: itemHeight,
-                    onCategorySelected: (category) {});
+                    onCategorySelected: (categoryId) {
+                      Navigator.of(context)
+                          .pushNamed(productListRoute, arguments: categoryId);
+                    });
               }),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,

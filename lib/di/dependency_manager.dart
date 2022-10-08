@@ -4,6 +4,7 @@ import 'package:nonoprice/domain/product_repository.dart';
 import 'package:nonoprice/domain/usecase/get_category_list_use_case.dart';
 import 'package:nonoprice/domain/usecase/get_product_list_use_case.dart';
 import 'package:nonoprice/presentation/home_cubit.dart';
+import 'package:nonoprice/presentation/product_list_cubit.dart';
 
 import '../data/product_repository.dart';
 
@@ -24,9 +25,15 @@ class DependencyManager {
       GetProductListUseCaseImpl(repository: Get.find()),
     );
 
-    Get.put<HomeCubit>(
-      HomeCubit(getCategoriesUseCase: Get.find(), locale: Get.deviceLocale),
-    );
+    Get.create(
+        () => HomeCubit(
+            getCategoriesUseCase: Get.find(), locale: Get.deviceLocale),
+        permanent: false);
+
+    Get.create(
+        () => ProductListCubit(
+            getProductListUseCase: Get.find(), locale: Get.deviceLocale),
+        permanent: false);
   }
 
   static T get<T>() {

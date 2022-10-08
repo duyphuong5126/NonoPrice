@@ -7,7 +7,8 @@ import 'package:nonoprice/presentation/model/product_category_uimodel.dart';
 import 'package:nonoprice/utility/cupertino_context_extension.dart';
 import 'package:nonoprice/utility/text_extension.dart';
 
-import '../../di/dependency_manager.dart';
+import '../../shared/constant.dart';
+import '../../shared/widget/loading_page_ios.dart';
 import '../model/home_state.dart';
 
 class HomePageIOS extends StatefulWidget {
@@ -20,40 +21,33 @@ class HomePageIOS extends StatefulWidget {
 class _HomePageIOSState extends State<HomePageIOS> {
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => DependencyManager.get<HomeCubit>()
-              ..getCategoryList(),
-          )
-        ],
-        child: CupertinoPageScaffold(
-            child: CustomScrollView(
-          slivers: [
-            CupertinoSliverNavigationBar(
-              largeTitle:
-                  BlocBuilder<HomeCubit, HomeState>(
-                      buildWhen: (prev, current) {
-                return current is HomeTitle;
-              }, builder: (context, state) {
-                String title = state is HomeTitle ? state.title : 'Welcome';
-                return Text(
-                  title,
-                  style: GoogleFonts.nunito()
-                      .inheritTextStyle
-                      .copyWith(color: context.mainColor),
-                );
-              }),
-              border: Border.all(color: context.barBackgroundColor),
-            ),
-            SliverFillRemaining(
-              fillOverscroll: true,
-              child: _HomePageBody(
-                safeAreaHeight: context.safeAreaHeight,
-              ),
-            )
-          ],
-        )));
+    context.read<HomeCubit>().getCategoryList();
+    return CupertinoPageScaffold(
+        child: CustomScrollView(
+      slivers: [
+        CupertinoSliverNavigationBar(
+          largeTitle:
+              BlocBuilder<HomeCubit, HomeState>(buildWhen: (prev, current) {
+            return current is HomeTitle;
+          }, builder: (context, state) {
+            String title = state is HomeTitle ? state.title : 'Welcome';
+            return Text(
+              title,
+              style: GoogleFonts.nunito()
+                  .inheritTextStyle
+                  .copyWith(color: context.mainColor),
+            );
+          }),
+          border: Border.all(color: context.barBackgroundColor),
+        ),
+        SliverFillRemaining(
+          fillOverscroll: true,
+          child: _HomePageBody(
+            safeAreaHeight: context.safeAreaHeight,
+          ),
+        )
+      ],
+    ));
   }
 }
 
@@ -72,39 +66,34 @@ class _HomePageBodyState extends State<_HomePageBody> {
   @override
   Widget build(BuildContext context) {
     double categoryItemHeight = widget.safeAreaHeight / 2;
-    return BlocBuilder<HomeCubit, HomeState>(
+    return BlocBuilder(
+        bloc: context.read<HomeCubit>(),
         builder: (context, state) {
-      return state is HomeProductCategories
-          ? _CategoryList(state: state, itemHeight: categoryItemHeight)
-          : state is HomeLoadingCategoriesFailure
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        state.message,
-                        style: context.titleLarge,
-                      ),
-                      CupertinoButton(
-                          child: const Icon(
-                            CupertinoIcons.refresh_thick,
-                            size: 32,
+          return state is HomeProductCategories
+              ? _CategoryList(state: state, itemHeight: categoryItemHeight)
+              : state is HomeLoadingCategoriesFailure
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            state.message,
+                            style: context.titleLarge,
                           ),
-                          onPressed: () {
-                            context
-                                .read<HomeCubit>()
-                                .getCategoryList();
-                          })
-                    ],
-                  ),
-                )
-              : const Center(
-                  child: CupertinoActivityIndicator(
-                    radius: 16,
-                  ),
-                );
-    });
+                          CupertinoButton(
+                              child: const Icon(
+                                CupertinoIcons.refresh_thick,
+                                size: 32,
+                              ),
+                              onPressed: () {
+                                context.read<HomeCubit>().getCategoryList();
+                              })
+                        ],
+                      ),
+                    )
+                  : const LoadingPageIOS();
+        });
   }
 }
 
@@ -136,14 +125,19 @@ class _CategoryList extends StatelessWidget {
               delegate: SliverChildBuilderDelegate(
                   childCount: state.categories.length, (context, index) {
                 return _ProductCategory(
-                    model: state.categories.elementAt(index),
-                    height: itemHeight,
-                    onCategorySelected: (category) {});
+                  model: state.categories.elementAt(index),
+                  height: itemHeight,
+                  onCategorySelected: (categoryId) {
+                    Navigator.of(context)
+                        .pushNamed(productListRoute, arguments: categoryId);
+                  },
+                );
               }),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 8.0,
-                  crossAxisSpacing: 8.0))
+                crossAxisCount: 2,
+                mainAxisSpacing: 8.0,
+                crossAxisSpacing: 8.0,
+              ))
         ],
       ),
     );
