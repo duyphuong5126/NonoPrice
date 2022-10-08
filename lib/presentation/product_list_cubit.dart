@@ -23,7 +23,7 @@ class ProductListCubit extends Cubit<ProductListState> {
         super(
             const ProductOverviewList(pageTitle: 'Products', overviewList: []));
 
-  void init(String categoryId) async {
+  void getProductList(String categoryId) async {
     emit(const LoadingProductList(message: 'Loading...'));
     (await _getProductListUseCase.execute(categoryId)).doOnSuccess(
       (productList) {

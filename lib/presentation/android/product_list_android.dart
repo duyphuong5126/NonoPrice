@@ -21,7 +21,7 @@ class _ProductListAndroidState extends State<ProductListAndroid> {
   @override
   Widget build(BuildContext context) {
     String categoryId = ModalRoute.of(context)?.settings.arguments as String;
-    context.read<ProductListCubit>().init(categoryId);
+    context.read<ProductListCubit>().getProductList(categoryId);
     return Scaffold(
       appBar: AppBar(
         title: BlocBuilder<ProductListCubit, ProductListState>(
@@ -65,6 +65,14 @@ class _ProductListAreaState extends State<_ProductListArea> {
                   ? LoadingErrorPageAndroid(
                       errorTitle: state.title,
                       errorMessage: state.message,
+                      onRetry: () {
+                        String categoryId = ModalRoute.of(context)
+                            ?.settings
+                            .arguments as String;
+                        context
+                            .read<ProductListCubit>()
+                            .getProductList(categoryId);
+                      },
                     )
                   : throw Exception('Illegal state $state');
     });

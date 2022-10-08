@@ -22,7 +22,7 @@ class _ProductListIOSState extends State<ProductListIOS> {
   @override
   Widget build(BuildContext context) {
     String categoryId = ModalRoute.of(context)?.settings.arguments as String;
-    context.read<ProductListCubit>().init(categoryId);
+    context.read<ProductListCubit>().getProductList(categoryId);
 
     return CupertinoPageScaffold(
       child: CustomScrollView(
@@ -73,7 +73,14 @@ class _ProductListAreaState extends State<_ProductListArea> {
                   ? LoadingErrorPageIOS(
                       errorTitle: state.title,
                       errorMessage: state.message,
-                    )
+                      onRetry: () {
+                        String categoryId = ModalRoute.of(context)
+                            ?.settings
+                            .arguments as String;
+                        context
+                            .read<ProductListCubit>()
+                            .getProductList(categoryId);
+                      })
                   : throw Exception('Illegal state $state');
     });
   }
