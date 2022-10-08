@@ -1,8 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nonoprice/shared/widget/loading_error_page_android.dart';
 import 'package:nonoprice/shared/widget/loading_page_android.dart';
-import 'package:nonoprice/utility/image_extension.dart';
 import 'package:nonoprice/utility/material_context_extension.dart';
 
 import '../../shared/constant.dart';
@@ -99,20 +99,18 @@ class _ProductList extends StatelessWidget {
                 vertical: mediumSpace, horizontal: normalSpace),
             child: Row(
               children: [
-                Image(
+                CachedNetworkImage(
                   width: defaultListThumbnailSize,
                   height: defaultListThumbnailSize,
-                  image: NetworkImage(productOverView.thumbnailUrl),
-                  loadingBuilder: (context, child, loadingProgress) {
-                    return loadingProgress?.isLoadingFinished == true
-                        ? const SizedBox(
-                            width: 8,
-                            height: 8,
-                            child: CircularProgressIndicator(),
-                          )
-                        : child;
+                  imageUrl: productOverView.thumbnailUrl,
+                  placeholder: (context, url) {
+                    return Container(
+                      color: Colors.grey[300],
+                      width: defaultListThumbnailSize,
+                      height: defaultListThumbnailSize,
+                    );
                   },
-                  errorBuilder: (context, error, stackTrace) {
+                  errorWidget: (context, url, error) {
                     return Container(
                       color: Colors.white,
                       width: defaultListThumbnailSize,

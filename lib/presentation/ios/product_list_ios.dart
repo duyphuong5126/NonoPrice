@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,7 +6,6 @@ import 'package:nonoprice/presentation/model/product_list_state.dart';
 import 'package:nonoprice/presentation/product_list_cubit.dart';
 import 'package:nonoprice/shared/widget/loading_page_ios.dart';
 import 'package:nonoprice/utility/cupertino_context_extension.dart';
-import 'package:nonoprice/utility/image_extension.dart';
 
 import '../../shared/constant.dart';
 import '../../shared/widget/loading_error_page_ios.dart';
@@ -106,18 +106,16 @@ class _ProductList extends StatelessWidget {
                 vertical: mediumSpace, horizontal: normalSpace),
             child: Row(
               children: [
-                Image(
+                CachedNetworkImage(
                   width: defaultListThumbnailSize,
                   height: defaultListThumbnailSize,
-                  image: NetworkImage(productOverView.thumbnailUrl),
-                  loadingBuilder: (context, child, loadingProgress) {
-                    return loadingProgress?.isLoadingFinished == true
-                        ? const CupertinoActivityIndicator(
-                            radius: 8.0,
-                          )
-                        : child;
+                  imageUrl: productOverView.thumbnailUrl,
+                  placeholder: (context, url) {
+                    return const CupertinoActivityIndicator(
+                      radius: 8.0,
+                    );
                   },
-                  errorBuilder: (context, error, stackTrace) {
+                  errorWidget: (context, url, error) {
                     return Container(
                       color: Colors.white,
                       width: defaultListThumbnailSize,
