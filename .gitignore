@@ -133,3 +133,4 @@ lint/tmp/
 .dart_tool/flutter_build/c5e1407d6bf8976883db31dea55367a3/outputs.json
 .flutter-plugins-dependencies
 .flutter-plugins-dependencies
+.dart_tool

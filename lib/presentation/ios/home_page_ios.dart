@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nonoprice/presentation/home_cubit.dart';
@@ -33,9 +32,9 @@ class _HomePageIOSState extends State<HomePageIOS> {
             String title = state is HomeTitle ? state.title : 'Welcome';
             return Text(
               title,
-              style: GoogleFonts.nunito()
-                  .inheritTextStyle
-                  .copyWith(color: context.mainColor),
+              style: GoogleFonts.nunito().inheritTextStyle.copyWith(
+                    color: context.mainColor,
+                  ),
             );
           }),
           border: Border.all(color: context.barBackgroundColor),
@@ -67,33 +66,35 @@ class _HomePageBodyState extends State<_HomePageBody> {
   Widget build(BuildContext context) {
     double categoryItemHeight = widget.safeAreaHeight / 2;
     return BlocBuilder(
-        bloc: context.read<HomeCubit>(),
-        builder: (context, state) {
-          return state is HomeProductCategories
-              ? _CategoryList(state: state, itemHeight: categoryItemHeight)
-              : state is HomeLoadingCategoriesFailure
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            state.message,
-                            style: context.titleLarge,
+      bloc: context.read<HomeCubit>(),
+      builder: (context, state) {
+        return state is HomeProductCategories
+            ? _CategoryList(state: state, itemHeight: categoryItemHeight)
+            : state is HomeLoadingCategoriesFailure
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          state.message,
+                          style: context.titleLarge,
+                        ),
+                        CupertinoButton(
+                          child: const Icon(
+                            CupertinoIcons.refresh_thick,
+                            size: 32,
                           ),
-                          CupertinoButton(
-                              child: const Icon(
-                                CupertinoIcons.refresh_thick,
-                                size: 32,
-                              ),
-                              onPressed: () {
-                                context.read<HomeCubit>().getCategoryList();
-                              })
-                        ],
-                      ),
-                    )
-                  : const LoadingPageIOS();
-        });
+                          onPressed: () {
+                            context.read<HomeCubit>().getCategoryList();
+                          },
+                        )
+                      ],
+                    ),
+                  )
+                : const LoadingPageIOS();
+      },
+    );
   }
 }
 
@@ -117,7 +118,9 @@ class _CategoryList extends StatelessWidget {
               padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
               child: Text(
                 state.header,
-                style: context.titleLarge.copyWith(color: context.primaryColor),
+                style: context.titleLarge.copyWith(
+                  color: context.primaryColor,
+                ),
               ),
             ),
           ),
@@ -165,21 +168,29 @@ class _ProductCategory extends StatelessWidget {
           height: height,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: const BorderRadius.all(Radius.circular(16.0))),
+            color: context.defaultCardColor,
+            borderRadius: const BorderRadius.all(
+              Radius.circular(
+                16.0,
+              ),
+            ),
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 model.name,
                 textAlign: TextAlign.center,
-                style:
-                    context.headlineSmall.copyWith(color: context.primaryColor),
+                style: context.headlineSmall.copyWith(
+                  color: context.primaryColor,
+                ),
               ),
               Text(
                 model.countText,
                 textAlign: TextAlign.center,
-                style: context.bodyLarge.copyWith(color: context.primaryColor),
+                style: context.bodyLarge.copyWith(
+                  color: context.primaryColor,
+                ),
               )
             ],
           ),

@@ -14,14 +14,19 @@ class ProductListCubit extends Cubit<ProductListState> {
   final NumberFormat _compactNumberFormat;
   final NumberFormat _defaultNumberFormat;
 
-  ProductListCubit(
-      {required GetProductListUseCase getProductListUseCase, Locale? locale})
-      : _getProductListUseCase = getProductListUseCase,
+  ProductListCubit({
+    required GetProductListUseCase getProductListUseCase,
+    Locale? locale,
+  })  : _getProductListUseCase = getProductListUseCase,
         _compactNumberFormat =
             NumberFormat.compact(locale: locale?.languageCode),
         _defaultNumberFormat = NumberFormat('###,###', locale?.languageCode),
         super(
-            const ProductOverviewList(pageTitle: 'Products', overviewList: []));
+          const ProductOverviewList(
+            pageTitle: 'Products',
+            overviewList: [],
+          ),
+        );
 
   void getProductList(String categoryId) async {
     emit(const LoadingProductList(message: 'Loading...'));
@@ -35,18 +40,27 @@ class ProductListCubit extends Cubit<ProductListState> {
                 : productCount >= _compactFormatThreshold
                     ? '${_compactNumberFormat.format(productCount)} products'
                     : '${_defaultNumberFormat.format(productCount)} products';
-        emit(ProductOverviewList(
+        emit(
+          ProductOverviewList(
             pageTitle: title,
-            overviewList: productList.map((product) => ProductOverView(
-                productId: product.id,
+            overviewList: productList.map(
+              (product) => ProductOverView(
+                productId: product.codeName,
                 productName: product.name,
-                thumbnailUrl: product.thumbnailUrl))));
+                thumbnailUrl: product.thumbnailUrl,
+                product: product,
+              ),
+            ),
+          ),
+        );
       },
     ).doOnFailure((error) {
-      emit(const LoadingProductListFailure(
-        title: 'Could not load product list',
-        message: 'Unknown error',
-      ));
+      emit(
+        const LoadingProductListFailure(
+          title: 'Could not load product list',
+          message: 'Unknown error',
+        ),
+      );
     });
   }
 }

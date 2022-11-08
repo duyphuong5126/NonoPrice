@@ -47,4 +47,14 @@ extension MaterialContextExtension on BuildContext {
   Color get mainColor => !isDark ? brandColor : brandDarkColor;
 
   Color get backgroundColor => Theme.of(this).backgroundColor;
+
+  /*Color get defaultCardColor => !isDark ? Colors.grey[300]! : backgroundColor;
+
+  Color get defaultCardBorderColor =>
+      !isDark ? Colors.grey[300]! : primaryColor;*/
+
+  Color get defaultCardColor => !isDark ? Colors.white : Colors.grey[900]!;
+
+  Color get defaultOutlineColor =>
+      !isDark ? Colors.grey[300]! : Colors.grey[800]!;
 }

@@ -1,12 +1,15 @@
 class Product {
-  final String id;
+  final String codeName;
   final String name;
+  final String categoryCode;
   final String photoUrl;
   final String thumbnailUrl;
 
-  const Product(
-      {required this.id,
-      required this.name,
-      required this.photoUrl,
-      required this.thumbnailUrl});
+  const Product({
+    required this.codeName,
+    required this.name,
+    required this.categoryCode,
+    required this.photoUrl,
+    required this.thumbnailUrl,
+  });
 }

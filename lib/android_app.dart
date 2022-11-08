@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nonoprice/presentation/android/home_page_android.dart';
+import 'package:nonoprice/presentation/android/price_collection_page_android.dart';
 import 'package:nonoprice/presentation/android/product_list_android.dart';
 import 'package:nonoprice/shared/constant.dart';
 
@@ -39,7 +40,7 @@ class _NonoPriceAndroidState extends State<NonoPriceAndroid> {
         theme: ThemeData(
           brightness: Brightness.light,
           backgroundColor: Colors.white,
-          scaffoldBackgroundColor: Colors.white,
+          scaffoldBackgroundColor: Colors.grey[200],
           primaryColor: Colors.grey[900],
           appBarTheme: AppBarTheme(
               backgroundColor: Colors.white,
@@ -50,7 +51,7 @@ class _NonoPriceAndroidState extends State<NonoPriceAndroid> {
         darkTheme: ThemeData(
           brightness: Brightness.dark,
           backgroundColor: Colors.grey[900],
-          scaffoldBackgroundColor: Colors.grey[900],
+          scaffoldBackgroundColor: Colors.black,
           primaryColor: Colors.white,
           appBarTheme: const AppBarTheme(
               backgroundColor: Colors.black,
@@ -61,6 +62,7 @@ class _NonoPriceAndroidState extends State<NonoPriceAndroid> {
         routes: {
           '/': (context) => const HomePageAndroid(),
           productListRoute: (context) => const ProductListAndroid(),
+          priceListRoute: (context) => const PriceCollectionPageAndroid(),
         },
       ),
     );

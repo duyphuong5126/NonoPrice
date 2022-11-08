@@ -32,7 +32,10 @@ class _ProductListAndroidState extends State<ProductListAndroid> {
               state is ProductOverviewList ? state.pageTitle : 'Products';
           return Text(
             title,
-            style: TextStyle(inherit: true, color: context.primaryColor),
+            style: TextStyle(
+              inherit: true,
+              color: context.primaryColor,
+            ),
           );
         }),
       ),
@@ -94,38 +97,49 @@ class _ProductList extends StatelessWidget {
         itemCount: productList.length,
         itemBuilder: (context, index) {
           ProductOverView productOverView = productList.elementAt(index);
-          return Container(
-            padding: const EdgeInsets.symmetric(
-                vertical: mediumSpace, horizontal: normalSpace),
-            child: Row(
-              children: [
-                CachedNetworkImage(
-                  width: defaultListThumbnailSize,
-                  height: defaultListThumbnailSize,
-                  imageUrl: productOverView.thumbnailUrl,
-                  placeholder: (context, url) {
-                    return Container(
-                      color: Colors.grey[300],
-                      width: defaultListThumbnailSize,
-                      height: defaultListThumbnailSize,
-                    );
-                  },
-                  errorWidget: (context, url, error) {
-                    return Container(
-                      color: Colors.white,
-                      width: defaultListThumbnailSize,
-                      height: defaultListThumbnailSize,
-                    );
-                  },
-                ),
-                const SizedBox(
-                  width: normalSpace,
-                ),
-                Text(
-                  productOverView.productName,
-                  style: context.bodyLarge,
-                )
-              ],
+          return InkWell(
+            onTap: () {
+              Navigator.of(context).pushNamed(
+                priceListRoute,
+                arguments: productOverView.product,
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                  vertical: mediumSpace, horizontal: normalSpace),
+              child: Row(
+                children: [
+                  CachedNetworkImage(
+                    width: defaultListThumbnailSize,
+                    height: defaultListThumbnailSize,
+                    imageUrl: productOverView.thumbnailUrl,
+                    placeholder: (context, url) {
+                      return Container(
+                        color: Colors.grey[300],
+                        width: defaultListThumbnailSize,
+                        height: defaultListThumbnailSize,
+                      );
+                    },
+                    errorWidget: (context, url, error) {
+                      return Container(
+                        color: Colors.white,
+                        width: defaultListThumbnailSize,
+                        height: defaultListThumbnailSize,
+                      );
+                    },
+                  ),
+                  const SizedBox(
+                    width: normalSpace,
+                  ),
+                  Text(
+                    productOverView.productName,
+                    style: context.bodyLarge?.copyWith(
+                      inherit: true,
+                      color: context.primaryColor,
+                    ),
+                  )
+                ],
+              ),
             ),
           );
         });

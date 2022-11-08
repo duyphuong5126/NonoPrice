@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nonoprice/presentation/ios/home_page_ios.dart';
+import 'package:nonoprice/presentation/ios/price_collection_page_ios.dart';
 import 'package:nonoprice/presentation/ios/product_list_ios.dart';
 
 import 'di/dependency_manager.dart';
@@ -32,23 +33,27 @@ class _NonoPriceIOSState extends State<NonoPriceIOS> {
           ),
           BlocProvider(
             create: (context) => DependencyManager.get<ProductListCubit>(),
-          )
+          ),
         ],
         child: CupertinoApp(
           theme: CupertinoThemeData(
-              barBackgroundColor: const CupertinoDynamicColor.withBrightness(
-                  color: CupertinoColors.white,
-                  darkColor: CupertinoColors.black),
-              scaffoldBackgroundColor:
-                  const CupertinoDynamicColor.withBrightness(
-                      color: CupertinoColors.white,
-                      darkColor: CupertinoColors.black),
-              primaryColor: CupertinoDynamicColor.withBrightness(
-                  color: Colors.grey[900] ?? CupertinoColors.black,
-                  darkColor: CupertinoColors.white)),
+            barBackgroundColor: const CupertinoDynamicColor.withBrightness(
+              color: CupertinoColors.white,
+              darkColor: CupertinoColors.black,
+            ),
+            scaffoldBackgroundColor: const CupertinoDynamicColor.withBrightness(
+              color: CupertinoColors.secondarySystemBackground,
+              darkColor: CupertinoColors.black,
+            ),
+            primaryColor: CupertinoDynamicColor.withBrightness(
+              color: Colors.grey[900] ?? CupertinoColors.black,
+              darkColor: CupertinoColors.white,
+            ),
+          ),
           routes: {
             '/': (context) => const HomePageIOS(),
             productListRoute: (context) => const ProductListIOS(),
+            priceListRoute: (context) => const PriceCollectionPageIOS(),
           },
         ));
   }

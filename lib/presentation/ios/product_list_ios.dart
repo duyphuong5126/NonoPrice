@@ -80,7 +80,8 @@ class _ProductListAreaState extends State<_ProductListArea> {
                         context
                             .read<ProductListCubit>()
                             .getProductList(categoryId);
-                      })
+                      },
+                    )
                   : throw Exception('Illegal state $state');
     });
   }
@@ -97,11 +98,18 @@ class _ProductList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        padding: const EdgeInsets.only(bottom: defaultListThumbnailSize),
-        itemCount: productList.length,
-        itemBuilder: (context, index) {
-          ProductOverView productOverView = productList.elementAt(index);
-          return Container(
+      padding: const EdgeInsets.only(bottom: defaultListThumbnailSize),
+      itemCount: productList.length,
+      itemBuilder: (context, index) {
+        ProductOverView productOverView = productList.elementAt(index);
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).pushNamed(
+              priceListRoute,
+              arguments: productOverView.product,
+            );
+          },
+          child: Container(
             padding: const EdgeInsets.symmetric(
                 vertical: mediumSpace, horizontal: normalSpace),
             child: Row(
@@ -126,13 +134,40 @@ class _ProductList extends StatelessWidget {
                 const SizedBox(
                   width: normalSpace,
                 ),
-                Text(
-                  productOverView.productName,
-                  style: context.bodyLarge,
-                )
+                Expanded(
+                  child: Container(
+                    height: defaultListThumbnailSize,
+                    decoration: BoxDecoration(
+                      border: BorderDirectional(
+                        bottom: BorderSide(
+                          color: context.defaultOutlineColor,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          productOverView.productName,
+                          style: context.bodyLarge.copyWith(
+                            color: context.primaryColor,
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          color: context.defaultNextIconColor,
+                          size: normalIconSize,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }

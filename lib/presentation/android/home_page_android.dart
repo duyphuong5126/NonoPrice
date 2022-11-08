@@ -110,20 +110,25 @@ class _CategoryList extends StatelessWidget {
             ),
           ),
           SliverGrid(
-              delegate: SliverChildBuilderDelegate(
-                  childCount: state.categories.length, (context, index) {
+            delegate: SliverChildBuilderDelegate(
+              childCount: state.categories.length,
+              (context, index) {
                 return _ProductCategory(
-                    model: state.categories.elementAt(index),
-                    height: itemHeight,
-                    onCategorySelected: (categoryId) {
-                      Navigator.of(context)
-                          .pushNamed(productListRoute, arguments: categoryId);
-                    });
-              }),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 8.0,
-                  crossAxisSpacing: 8.0))
+                  model: state.categories.elementAt(index),
+                  height: itemHeight,
+                  onCategorySelected: (categoryId) {
+                    Navigator.of(context)
+                        .pushNamed(productListRoute, arguments: categoryId);
+                  },
+                );
+              },
+            ),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 8.0,
+              crossAxisSpacing: 8.0,
+            ),
+          )
         ],
       ),
     );
@@ -144,11 +149,6 @@ class _ProductCategory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color cardColor =
-        !context.isDark ? Colors.grey[300]! : context.backgroundColor;
-    Color cardBorderColor =
-        !context.isDark ? Colors.grey[300]! : context.primaryColor;
-
     return InkWell(
         borderRadius: const BorderRadius.all(Radius.circular(16.0)),
         onTap: () => onCategorySelected(model.categoryId),
@@ -156,22 +156,29 @@ class _ProductCategory extends StatelessWidget {
           padding: const EdgeInsets.all(4.0),
           height: height,
           decoration: BoxDecoration(
-              color: cardColor,
-              border: Border.all(color: cardBorderColor),
-              borderRadius: const BorderRadius.all(Radius.circular(16.0))),
+            color: context.defaultCardColor,
+            borderRadius: const BorderRadius.all(
+              Radius.circular(
+                16.0,
+              ),
+            ),
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 model.name,
                 textAlign: TextAlign.center,
-                style: context.headlineSmall
-                    ?.copyWith(color: context.primaryColor),
+                style: context.headlineSmall?.copyWith(
+                  color: context.primaryColor,
+                ),
               ),
               Text(
                 model.countText,
                 textAlign: TextAlign.center,
-                style: context.bodyLarge?.copyWith(color: context.primaryColor),
+                style: context.bodyLarge?.copyWith(
+                  color: context.primaryColor,
+                ),
               )
             ],
           ),
