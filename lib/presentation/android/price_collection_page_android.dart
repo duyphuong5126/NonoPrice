@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nonoprice/domain/entity/product.dart';
 import 'package:nonoprice/presentation/price_collection_page_cubit.dart';
 import 'package:nonoprice/utility/material_context_extension.dart';
@@ -34,18 +35,22 @@ class PriceCollectionPageAndroid extends StatelessWidget {
         body: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
-              child: SizedBox(
+              child: Container(
                 width: double.infinity,
+                color: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  vertical: normalSpace,
+                ),
                 child: AspectRatio(
                   aspectRatio: 16.0 / 9,
                   child: CachedNetworkImage(
                     imageUrl: product.photoUrl,
                     fit: BoxFit.contain,
                     placeholder: (context, url) => Container(
-                      color: Colors.grey,
+                      color: Colors.white,
                     ),
                     errorWidget: (context, url, error) => Container(
-                      color: Colors.grey,
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -210,12 +215,28 @@ class _BestChoice extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                bestPrice,
-                style: context.headlineSmall?.copyWith(
-                  inherit: true,
-                  color: context.mainColor,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        bestPrice,
+                        style: context.headlineSmall?.copyWith(
+                          inherit: true,
+                          color: context.mainColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SvgPicture.asset(
+                    icCrown,
+                    width: largeIconSize,
+                    height: largeIconSize,
+                    color: context.favoriteColor,
+                  ),
+                ],
               ),
               const SizedBox(
                 height: smallSpace,

@@ -57,4 +57,6 @@ extension MaterialContextExtension on BuildContext {
 
   Color get defaultOutlineColor =>
       !isDark ? Colors.grey[300]! : Colors.grey[800]!;
+
+  Color get favoriteColor => !isDark ? darkGold : gold;
 }

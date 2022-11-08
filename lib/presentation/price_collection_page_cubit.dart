@@ -67,7 +67,7 @@ class PriceCollectionPageCubit extends Cubit<PriceCollectionState> {
             lowestPriceTitle: 'Lowest option',
             lowestPrice:
                 '${_numberFormat.format(minPriceItem.price.toInt())} ${minPriceItem.currency}',
-            lowestPriceInfo: 'Option: ${minPriceItem.options}',
+            lowestPriceInfo: '${product.name} - ${minPriceItem.options}',
             updatedAt: 'Last update: ${_displayDateFormat.format(lastUpdate)}',
           ),
         );

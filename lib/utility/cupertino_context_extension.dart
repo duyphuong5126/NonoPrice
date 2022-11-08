@@ -120,4 +120,6 @@ extension CupertinoContextExtension on BuildContext {
 
   Color get defaultNextIconColor =>
       !isDark ? Colors.grey[500]! : Colors.grey[300]!;
+
+  Color get favoriteColor => !isDark ? darkGold : gold;
 }
