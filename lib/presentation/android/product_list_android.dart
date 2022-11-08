@@ -134,7 +134,6 @@ class _ProductList extends StatelessWidget {
                   Text(
                     productOverView.productName,
                     style: context.bodyLarge?.copyWith(
-                      inherit: true,
                       color: context.primaryColor,
                     ),
                   )

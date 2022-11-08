@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../shared/constant.dart';
 
 extension MaterialContextExtension on BuildContext {
-  bool get isDark => Theme.of(this).brightness == Brightness.dark;
+  bool get isDark => MediaQuery.of(this).platformBrightness == Brightness.dark;
 
   TextStyle? get displayLarge => Theme.of(this).textTheme.displayLarge;
 
